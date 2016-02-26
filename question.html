@@ -133,53 +133,96 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="page-header">
-                    <h3 id="tables">Резултат</h3>
+                <div class="well side-panel">
+                    <div class="page-header">
+                        <h3 id="tables">Резултат</h3>
+                    </div>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Играч</th>
+                                <th>Резултат</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-left" id="leaderboard">
+                            <tr class="success">
+                                <td>1</td>
+                                <td>Иво</td>
+                                <td>7</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Кало</td>
+                                <td>4</td>
+                            </tr>
+                            <tr class="success">
+                                <td>3</td>
+                                <td>Мони</td>
+                                <td>3</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Друго дете</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>Анонимен</td>
+                                <td>0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <button class="btn btn-warning btn-default" data-toggle="modal" data-target="#myModal">Харесай ни, майка!</button>
                 </div>
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Играч</th>
-                            <th>Резултат</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-left" id="leaderboard">
-                        <tr class="success">
-                            <td>1</td>
-                            <td>Иво</td>
-                            <td>7</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Кало</td>
-                            <td>4</td>
-                        </tr>
-                        <tr class="success">
-                            <td>3</td>
-                            <td>Мони</td>
-                            <td>3</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Друго дете</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>Анонимен</td>
-                            <td>0</td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
         </div>
 
     </div>
 
 
+    <!-- Това е модал, майка! -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">И ние те харесваме, майка!</h4>
+                </div>
+                <div class="modal-body">
+                    Това е коте.
+
+                    <img id="kote" alt="" class="img-responsive" style="max-height: 350px;" />
+                    <script>
+                        $(function(){
+                            $('#myModal').on('show.bs.modal', function(){
+                                $.ajax({
+                                    url: 'https://nijikokun-random-cats.p.mashape.com/random',
+                                    headers: {
+                                        "X-Mashape-Key": "rCHR14UA0imshTfNn7uYk7sMByXCp1YTB2Ijsny27oo25nA7oB",
+                                        "Accept": "application/json"
+                                    }
+                                })
+                                .done(function(data){
+                                    $('#kote').attr('src', data.source);
+                                });
+                            });
+                        });
+                    </script>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">БХ</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Добре</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script src="lib/jquery/dist/jquery.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="lib/bootstrap-material-design/dist/js/material.js"></script>
     <script src="lib/bootstrap-material-design/dist/js/ripples.js"></script>
     <script>

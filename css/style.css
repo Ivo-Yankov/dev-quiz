@@ -38,3 +38,10 @@
     background-color: #ff5722;
     color: #fff;   
 }
+
+.side-panel {
+    height: 95vh;
+}
+.table {
+    font-size: 16px;
+}
