@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+    <title>Front-end Startup Template</title>
+
+    <!-- Material Design fonts -->
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+    <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+    <!-- Bootstrap Material Design -->
+    <link rel="stylesheet" href="lib/bootstrap-material-design/dist/css/bootstrap-material-design.css">
+    <link rel="stylesheet" href="lib/bootstrap-material-design/dist/css/ripples.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <!--[if lt IE 9]>
+        <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <script src="//css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <div class="container">
+
+        <div class="page-header">
+            <h1 style="font-size: 100px;">Кое животно е бозайник?</h1>
+        </div>
+
+        <div class="answers">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="text-center answers__single-answer">
+                        Кон
+                        <div class="answers__single-answer__border color--choice1"></div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="text-center answers__single-answer">
+                        Мечка
+                        <div class="answers__single-answer__border color--choice2"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="text-center answers__single-answer">
+                        Малък делфин
+                        <div class="answers__single-answer__border color--choice3"></div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="text-center answers__single-answer">
+                        Джорджано
+                        <div class="answers__single-answer__border color--choice4"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+    <script src="lib/jquery/dist/jquery.js"></script>
+    <script src="lib/bootstrap-material-design/dist/js/material.js"></script>
+    <script src="lib/bootstrap-material-design/dist/js/ripples.js"></script>
+    <script>
+        $(function(){
+            $.material.init();
+        });
+    </script>
+
+</body>
+</html>
