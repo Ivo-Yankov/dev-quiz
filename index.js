@@ -46,12 +46,18 @@ io.on('connection', function(socket){
 		console.log('A player has set their name to: ' + name);
 		players[socket.id] = { name: name, points: 0 };
 
+		io.emit('ready players', players);
+
 		//Send status to the client
 		io.emit('status', {'status' : 'OK'});
 	});
 
 	socket.on('new game', function(data){
 		newGame();
+	});
+
+	socket.on('give me players', function(data){
+		io.emit('ready players', players);
 	});
 
 	socket.on('answer', function(answer){
@@ -88,11 +94,13 @@ io.on('connection', function(socket){
 			}, 3000);
 		}
 	});
-});
 
-io.on('disconnection', function(socket){
-	console.log(players[socket.id] + " has left the game :(");
-	delete players[socket.id];
+	socket.on('disconnect', function() {
+		if(players[socket.id]){
+			console.log(players[socket.id].name + " has left the game :(");
+		}
+		delete players[socket.id];
+   });
 });
 
 http.listen(3000, function(){
@@ -104,7 +112,7 @@ function getQuestions(){
 		var category_id = category.id;
 		//TODO remove used category
 
-		unirest.get("https://pareshchouhan-trivia-v1.p.mashape.com/v1/getQuizQuestionsByCategory?limit=10&page=" + Math.floor(Math.random() * 3) )
+		unirest.get("https://pareshchouhan-trivia-v1.p.mashape.com/v1/getQuizQuestionsByCategory?categoryId=178&limit=10&page=" + Math.floor(Math.random() * 5) )
 		.header("X-Mashape-Key", "rCHR14UA0imshTfNn7uYk7sMByXCp1YTB2Ijsny27oo25nA7oB")
 		.header("Accept", "application/json")
 		.end(function (result) {
@@ -128,7 +136,7 @@ function sendQuestion(){
 
 	io.emit('question', question_data);
 	questions.pop();
-	if( questions.length == 2 ) {
+	if( questions.length <= 4 ) {
 		console.log('getting new questions');
 		getQuestions();
 	}

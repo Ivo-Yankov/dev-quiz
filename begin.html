@@ -26,8 +26,8 @@
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
+        var socket = io();
         $(function(){
-            var socket = io();
             $('#start-button').on('click', function(){
                 socket.emit('start game', true);
             });
@@ -41,6 +41,25 @@
                 }
             });
 
+            socket.on('ready players', function(players){
+                var i = 0;
+                var players_html = "";
+                if( players ) {
+                    for( var player_id in players ) {
+                        var player = players[player_id];
+                        players_html += "<tr>";
+                        players_html += "<td>" + (i+1) + "</td>";
+                        players_html += "<td>" + player.name + "</td>";
+                        players_html += "<td>ИМА ГОТОВНОСТ!!1!</td>";
+                        players_html += "</tr>";
+                        i++;
+                    }
+                }
+
+                $('#players').html(players_html)
+            });
+
+            socket.emit('give me players', true);
         });
     </script>
 </head>
@@ -62,7 +81,7 @@
                 <div class="jumbotron text-center">
                     <h1>Здравей!</h1>
                     <p>Хайде да поиграем.</p>
-                    Уха, <span class="badge">5</span> играчи онлайн</p>
+                    <!-- Уха, <span class="badge">5</span> играчи онлайн</p> -->
                     <a id="start-button" class="btn btn-primary btn-lg btn-success btn-raised" href="javascript:;">Старт, майка</a>
                 </div>
             </div>
@@ -76,32 +95,7 @@
                             <th>Готовност</th>
                         </tr>
                     </thead>
-                    <tbody class="text-left">
-                        <tr class="success">
-                            <td>1</td>
-                            <td>Иво</td>
-                            <td>Да!</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Кало</td>
-                            <td>Още се чуди...</td>
-                        </tr>
-                        <tr class="success">
-                            <td>3</td>
-                            <td>Мони</td>
-                            <td>Да!</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Друго дете</td>
-                            <td>Още се чуди...</td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>Анонимен</td>
-                            <td>Още се чуди...</td>
-                        </tr>
+                    <tbody id="players" class="text-left">
                     </tbody>
                 </table>
             </div>

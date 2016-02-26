@@ -26,8 +26,10 @@
     <![endif]-->
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="lib/underscore/underscore.js"></script>
     <script>
         var socket = io();
+        var question;
         $(function(){
             socket.on('question', function(question_data){
                 $('.correct').removeClass('correct');
@@ -38,6 +40,9 @@
                 question = question_data;
                 if(question){
                     $('#question-text').html(question.q_text);
+                    //bravo be kalo!
+                    var text = $('#question-text').text();
+                    $('#question-text').html(text.trim());
                     $('#answer-1').text(question.q_options_1);
                     $('#answer-2').text(question.q_options_2);
                     $('#answer-3').text(question.q_options_3);
@@ -53,10 +58,10 @@
                 var answer_div = $( '#answer-' + answer_data.answer ).closest('.answers__single-answer');
                 $('#question-result-holder').show();
                 if( answer_data.status ) {
-                    answer_div.addClass('correct');
                     $('#question-result-holder')
                         .removeClass('alert-warning alert-success')
                         .addClass('alert-success');
+                    answer_div.addClass('correct');
                     $('#question-result').html(answer_data.player + ' ПОЗНА!');
                 }
                 else {
@@ -64,6 +69,9 @@
                         .removeClass('alert-warning alert-success')
                         .addClass('alert-warning');
                     answer_div.addClass('wrong');
+
+                    $( '#answer-' + question.q_correct_option ).closest('.answers__single-answer').addClass('correct');
+
                     $('#question-result').html(answer_data.player + ' ОБЪРКА!!!');
                 }
 
@@ -71,6 +79,9 @@
 
                 if( answer_data.players ){
                     console.log(answer_data.players);
+                    
+                    answer_data.players = _.sortBy(answer_data.players, 'points').reverse();
+
                     var i = 0;
                     for( var player_id in answer_data.players ) {
                         var player = answer_data.players[player_id];
@@ -105,7 +116,7 @@
                 setTimeout(function(){
                     socket.emit('new game', true);
                     window.location.reload();
-                }, 10000);
+                }, 5000);
             });
 
             socket.emit('game started', true);

@@ -3,6 +3,7 @@
   "version": "2.0",
   "dependencies": {
     "bootstrap-material-design": "^0.5.8",
-    "jQuery": "^2.2.1"
+    "jQuery": "^2.2.1",
+    "underscore": "^1.8.3"
   }
 }
