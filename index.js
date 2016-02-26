@@ -15,31 +15,29 @@ var current_question;
 getCategoryList();
 
 app.get('/', function(req, res){
-	res.sendFile(__dirname + '/begin.html');
+	if( ! game_is_running ){
+		res.sendFile(__dirname + '/begin.html');
+	}
+	else {
+		res.sendFile(__dirname + '/question.html');
+	}
 });
 
 app.use("/lib", express.static(path.join(__dirname, 'lib')));
-
-//TOVA NE E TAKA
-app.get('/client', function(req, res){
-	// Send shit to the client
-	if( ! game_is_running ) {
-		res.send('lqlqlq');
-	}
-	else {
-		res.send('igrata e zapo4nala');
-	}
-});
+app.use("/css", express.static(path.join(__dirname, 'css')));
 
 io.on('connection', function(socket){
 	console.log('new connection! ' + socket.id);
-	console.log(io.sockets.length);
 
 	socket.on('start game', function(data){
 		console.log('game is starting!');
-		console.log(data);
-		console.log(io.emit('start', {'status' : 'OK'} ));
 		game_is_running = true;
+		io.emit('start game', {'status' : 'OK'});
+	});
+
+	socket.on('game started', function(data){
+		console.log('The game has started!');
+		sendQuestion();
 	});
 
 	socket.on('name', function(name){
@@ -52,20 +50,16 @@ io.on('connection', function(socket){
 	});
 
 	socket.on('answer', function(answer){
-		var status = false;
-		if( answer == current_question.q_correct_option ) {
-			status = true;
-		}
+		var status = answer == current_question.q_correct_option
 
 		io.emit('answer', {
-			'status'	: status,
-			'user'		: player_names[socket.id]
+			'player'	: player_names[socket.id] || 'undefined',
+			'status'	: status
 		});
-
 
 		setTimeout(function(){
 			sendQuestion();
-		}, 2000);
+		}, 1000);
 	});
 });
 
@@ -89,7 +83,8 @@ function getQuestions(){
 
 function sendQuestion(){
 	current_question = questions[ questions.length - 1 ];
-	io.emit('question', {category : category_name, question : current_question });
+	io.emit('question', {category : category.category_name, question : current_question });
+	console.log(current_question);
 	questions.pop();
 	if( questions.length == 0 ) {
 		getQuestions();

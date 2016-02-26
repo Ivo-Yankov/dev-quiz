@@ -24,26 +24,53 @@
         <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
         <script src="//css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
     <![endif]-->
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+        var socket = io();
+        $(function(){
+            socket.on('question', function(question_data){
+                var question = question_data.question;
+                if(question){
+                    console.log(question);
+                    $('#question-text').html(question.q_text);
+                    $('#answer-1').text(question.q_options_1);
+                    $('#answer-2').text(question.q_options_2);
+                    $('#answer-3').text(question.q_options_3);
+                    $('#answer-4').text(question.q_options_4);
+                }
+                else{
+                    console.log('NO QUESTION');
+                }
+            });
+
+            socket.on('answer', function(answer_data){
+                console.log(answer_data);
+            });
+
+            socket.emit('game started', true);
+        });
+    </script>
 </head>
 
 <body>
     <div class="container">
 
         <div class="page-header">
-            <h1 style="font-size: 100px;">Кое животно е бозайник?</h1>
+            <h1 style="font-size: 100px;" id="question-text">...?</h1>
         </div>
 
         <div class="answers">
             <div class="row">
                 <div class="col-md-6">
                     <div class="text-center answers__single-answer">
-                        Кон
+                        <span id="answer-1">...</span>
                         <div class="answers__single-answer__border color--choice1"></div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="text-center answers__single-answer">
-                        Мечка
+                        <span id="answer-2">...</span>
                         <div class="answers__single-answer__border color--choice2"></div>
                     </div>
                 </div>
@@ -51,13 +78,13 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="text-center answers__single-answer">
-                        Малък делфин
+                        <span id="answer-3">...</span>
                         <div class="answers__single-answer__border color--choice3"></div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="text-center answers__single-answer">
-                        Джорджано
+                        <span id="answer-4">...</span>
                         <div class="answers__single-answer__border color--choice4"></div>
                     </div>
                 </div>
