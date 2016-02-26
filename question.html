@@ -46,7 +46,6 @@
             });
 
             socket.on('answer', function(answer_data){
-                console.log('ANSWER');
                 console.log(answer_data);
                 var answer_div = $( '#answer-' + answer_data.answer ).closest('.answers__single-answer');
                 if( answer_data.status ) {
