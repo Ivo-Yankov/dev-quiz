@@ -191,12 +191,14 @@
                     <h4 class="modal-title" id="myModalLabel">И ние те харесваме, майка!</h4>
                 </div>
                 <div class="modal-body">
-                    Това е коте.
+                    <div id="loading" style="display: none;">Зареждаме коте ...</div>
+                    <div id="kote-success" style="display: none;">Това е коте:</div>
 
                     <img id="kote" alt="" class="img-responsive" style="max-height: 350px;" />
                     <script>
                         $(function(){
                             $('#myModal').on('show.bs.modal', function(){
+                                $('#loading').show();
                                 $.ajax({
                                     url: 'https://nijikokun-random-cats.p.mashape.com/random',
                                     headers: {
@@ -205,16 +207,23 @@
                                     }
                                 })
                                 .done(function(data){
+                                    $('#loading').hide();
+                                    $('#kote-success').show();
+
                                     $('#kote').attr('src', data.source);
                                 });
+                            })
+                            .on('hide.bs.modal', function(){
+                                $('#loading').show();
+                                $('#kote-success').hide();
+                                $('#kote').attr('src', '');
                             });
                         });
                     </script>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">БХ</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Добре</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">БХ</button>
                 </div>
             </div>
         </div>
