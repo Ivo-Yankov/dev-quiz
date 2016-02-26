@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#4ab7ce</color>
+    <color name="colorPrimaryDark">#358293</color>
+    <color name="colorAccent">#982649</color>
+    <color name="yellowButton">#F2FF42</color>
+    <color name="blueButton">#4ab7ce</color>
+    <color name="raspberryButton">#982649</color>
+    <color name="pinkButton">#FF5964</color>
+
+</resources>
