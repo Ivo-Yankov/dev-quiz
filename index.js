@@ -11,7 +11,6 @@ var questions;
 var categories;
 var category;
 var current_question;
-
 var question_is_answered = false;
 
 getCategoryList();
@@ -51,6 +50,10 @@ io.on('connection', function(socket){
 		io.emit('status', {'status' : 'OK'});
 	});
 
+	socket.on('new game', function(data){
+		newGame();
+	});
+
 	socket.on('answer', function(answer){
 		console.log(question_is_answered);
 		if ( !question_is_answered && players[socket.id] ) {
@@ -60,6 +63,11 @@ io.on('connection', function(socket){
 			if(answer == current_question.q_correct_option){
 				status = true;
 				players[socket.id].points++;
+
+				if(players[socket.id].points == 5){
+					io.emit('end game', {name: players[socket.id]});
+					return;
+				}
 			}
 			else{
 				status = false;
@@ -80,6 +88,11 @@ io.on('connection', function(socket){
 			}, 3000);
 		}
 	});
+});
+
+io.on('disconnection', function(socket){
+	console.log(players[socket.id] + " has left the game :(");
+	delete players[socket.id];
 });
 
 http.listen(3000, function(){
@@ -140,4 +153,22 @@ function shuffle(a) {
         a[i - 1] = a[j];
         a[j] = x;
     }
+}
+
+function newGame(){
+	game_is_running = false;
+	for(id in players){
+		players[id].points = 0;
+	}
+	questions = {};
+	category = {};
+	current_question = {};
+	question_is_answered = false;
+	getQuestions();
+	io.emit('restart', true);
+}
+
+//TODO абе кво ми пука бе
+function endGame(){
+
 }
