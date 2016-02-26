@@ -32,6 +32,7 @@
             socket.on('question', function(question_data){
                 $('.correct').removeClass('correct');
                 $('.wrong').removeClass('wrong');
+                $('#question-result-holder').hide();
                 question = question_data;
                 if(question){
                     $('#question-text').html(question.q_text);
@@ -48,11 +49,18 @@
             socket.on('answer', function(answer_data){
                 console.log(answer_data);
                 var answer_div = $( '#answer-' + answer_data.answer ).closest('.answers__single-answer');
+                $('#question-result-holder').show();
                 if( answer_data.status ) {
                     answer_div.addClass('correct');
+                    $('#question-result-holder')
+                        .removeClass('alert-warning alert-success')
+                        .addClass('alert-success');
                     $('#question-result').html(answer_data.player + ' ПОЗНА!');
                 }
                 else {
+                    $('#question-result-holder')
+                        .removeClass('alert-warning alert-success')
+                        .addClass('alert-warning');
                     answer_div.addClass('wrong');
                     $('#question-result').html(answer_data.player + ' ОБЪРКА!!!');
                 }
@@ -85,6 +93,11 @@
                 <div class="page-header text-center">
                     <h1 style="font-size: 50px;" id="question-text">...?</h1>
                 </div>
+
+                <div id="question-result-holder" class="alert alert-warning" style="display: none;">
+                    <p id="question-result"></p>
+                </div>
+
                 <div class="answers">
                     <div class="row">
                         <div class="col-md-6">
@@ -158,10 +171,6 @@
                 </table>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12" id="question-result"></div>
-        </div>
-
 
     </div>
 
