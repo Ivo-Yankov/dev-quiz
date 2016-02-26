@@ -1,20 +1,24 @@
+var express = require('express');
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var unirest = require('unirest');
+var path = require('path');
 
 var game_is_running = false;
 var player_names = [];
 var questions;
 var categories;
 var category;
+var current_question;
 
 getCategoryList();
 
 app.get('/', function(req, res){
-	res.sendFile(__dirname + '/index.html');
+	res.sendFile(__dirname + '/begin.html');
 });
 
+app.use("/lib", express.static(path.join(__dirname, 'lib')));
 
 //TOVA NE E TAKA
 app.get('/client', function(req, res){
@@ -28,14 +32,13 @@ app.get('/client', function(req, res){
 });
 
 io.on('connection', function(socket){
-
 	console.log('new connection! ' + socket.id);
-	socket.on('chat message', function(msg){
-		
-	});
+	console.log(io.sockets.length);
 
 	socket.on('start game', function(data){
-
+		console.log('game is starting!');
+		console.log(data);
+		console.log(io.emit('start', {'status' : 'OK'} ));
 		game_is_running = true;
 	});
 
@@ -46,6 +49,23 @@ io.on('connection', function(socket){
 
 		//Send status to the client
 		io.emit('status', {'status' : 'OK'});
+	});
+
+	socket.on('answer', function(answer){
+		var status = false;
+		if( answer == current_question.q_correct_option ) {
+			status = true;
+		}
+
+		io.emit('answer', {
+			'status'	: status,
+			'user'		: player_names[socket.id]
+		});
+
+
+		setTimeout(function(){
+			sendQuestion();
+		}, 2000);
 	});
 });
 
@@ -68,10 +88,11 @@ function getQuestions(){
 }
 
 function sendQuestion(){
-	io.emit('question', {category : category_name, question : questions[ questions.length - 1 ] });
-	questions.length.pop();
+	current_question = questions[ questions.length - 1 ];
+	io.emit('question', {category : category_name, question : current_question });
+	questions.pop();
 	if( questions.length == 0 ) {
-		getQuestions( category_id );
+		getQuestions();
 	}
 }
 
@@ -80,8 +101,8 @@ function getCategoryList(){
 	.header("X-Mashape-Key", "rCHR14UA0imshTfNn7uYk7sMByXCp1YTB2Ijsny27oo25nA7oB")
 	.header("Accept", "application/json")
 	.end(function (result) {
-		getQuestions();
 		categories = result.body;
+		getQuestions();
 		console.log(categories);
 	});
 }
