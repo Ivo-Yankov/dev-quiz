@@ -6,7 +6,7 @@ var unirest = require('unirest');
 var path = require('path');
 
 var game_is_running = false;
-var players = [];
+var players = {};
 var questions;
 var categories;
 var category;
@@ -53,7 +53,7 @@ io.on('connection', function(socket){
 
 	socket.on('answer', function(answer){
 		console.log(question_is_answered);
-		if ( !question_is_answered ) {
+		if ( !question_is_answered && players[socket.id] ) {
 			question_is_answered = true;
 			var status;
 
@@ -77,7 +77,7 @@ io.on('connection', function(socket){
 
 			setTimeout(function(){
 				sendQuestion();
-			}, 1000);
+			}, 3000);
 		}
 	});
 });

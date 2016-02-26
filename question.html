@@ -69,12 +69,15 @@
 
                 if( answer_data.players ){
                     console.log(answer_data.players);
-                    for( var i=0; i < answer_data.players.length; i++ ) {
+                    var i = 0;
+                    for( var player_id in answer_data.players ) {
+                        var player = answer_data.players[player_id];
                         leaderboard_html += "<tr>";
                         leaderboard_html += "<td>" + (i+1) + "</td>";
-                        leaderboard_html += "<td>" + answer_data.players.name + "</td>";
-                        leaderboard_html += "<td>" + answer_data.players.points + "</td>";
+                        leaderboard_html += "<td>" + player.name + "</td>";
+                        leaderboard_html += "<td>" + player.points + "</td>";
                         leaderboard_html += "</tr>";
+                        i++;
                     }
 
                     $('#leaderboard').html(leaderboard_html);
