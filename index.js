@@ -6,11 +6,13 @@ var unirest = require('unirest');
 var path = require('path');
 
 var game_is_running = false;
-var player_names = [];
+var players = [];
 var questions;
 var categories;
 var category;
 var current_question;
+
+var question_is_answered = false;
 
 getCategoryList();
 
@@ -43,24 +45,40 @@ io.on('connection', function(socket){
 	socket.on('name', function(name){
 		//save the name
 		console.log('A player has set their name to: ' + name);
-		player_names[socket.id] = name;
+		players[socket.id] = { name: name, points: 0 };
 
 		//Send status to the client
 		io.emit('status', {'status' : 'OK'});
 	});
 
 	socket.on('answer', function(answer){
-		var status = answer == current_question.q_correct_option
+		console.log(question_is_answered);
+		if ( !question_is_answered ) {
+			question_is_answered = true;
+			var status;
 
-		io.emit('answer', {
-			'status'	: status,
-			'player'	: player_names[socket.id] || 'undefined',
-			'answer'	: answer
-		});
+			if(answer == current_question.q_correct_option){
+				status = true;
+				players[socket.id].points++;
+			}
+			else{
+				status = false;
+				players[socket.id].points--;
+			}
+			
+			console.log(players);
 
-		setTimeout(function(){
-			sendQuestion();
-		}, 1000);
+			io.emit('answer', {
+				'status'	: status,
+				'player'	: players[socket.id].name || 'undefined',
+				'answer'	: answer,
+				'players'	: players
+			});
+
+			setTimeout(function(){
+				sendQuestion();
+			}, 1000);
+		}
 	});
 });
 
@@ -69,20 +87,23 @@ http.listen(3000, function(){
 });
 
 function getQuestions(){
-	category = categories[Math.floor( Math.random() * (categories.length) )];
-	var category_id = category.id;
-	//TODO remove used category
+		category = categories[Math.floor( Math.random() * (categories.length) )];
+		var category_id = category.id;
+		//TODO remove used category
 
-	unirest.get("https://pareshchouhan-trivia-v1.p.mashape.com/v1/getQuizQuestionsByCategory?categoryId=" + category_id + "&limit=3&page=" + Math.floor(Math.random() * 3) )
-	.header("X-Mashape-Key", "rCHR14UA0imshTfNn7uYk7sMByXCp1YTB2Ijsny27oo25nA7oB")
-	.header("Accept", "application/json")
-	.end(function (result) {
-		questions = result.body;
-		console.log(result.body);
-	});
+		unirest.get("https://pareshchouhan-trivia-v1.p.mashape.com/v1/getQuizQuestionsByCategory?limit=10&page=" + Math.floor(Math.random() * 3) )
+		.header("X-Mashape-Key", "rCHR14UA0imshTfNn7uYk7sMByXCp1YTB2Ijsny27oo25nA7oB")
+		.header("Accept", "application/json")
+		.end(function (result) {
+			console.log('new questions are here');
+			questions = result.body;
+			shuffle(questions);
+		});
 }
 
 function sendQuestion(){
+	console.log('sending question');
+	question_is_answered = false;
 	current_question = questions[ questions.length - 1 ];
 	
 	// var question_data = {
@@ -93,9 +114,9 @@ function sendQuestion(){
 	var question_data = current_question;
 
 	io.emit('question', question_data);
-	console.log(current_question);
 	questions.pop();
-	if( questions.length == 0 ) {
+	if( questions.length == 2 ) {
+		console.log('getting new questions');
 		getQuestions();
 	}
 }
@@ -109,4 +130,14 @@ function getCategoryList(){
 		getQuestions();
 		console.log(categories);
 	});
+}
+
+function shuffle(a) {
+    var j, x, i;
+    for (i = a.length; i; i -= 1) {
+        j = Math.floor(Math.random() * i);
+        x = a[i - 1];
+        a[i - 1] = a[j];
+        a[j] = x;
+    }
 }

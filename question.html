@@ -46,6 +46,7 @@
             });
 
             socket.on('answer', function(answer_data){
+                console.log('ANSWER');
                 console.log(answer_data);
                 var answer_div = $( '#answer-' + answer_data.answer ).closest('.answers__single-answer');
                 if( answer_data.status ) {
@@ -56,6 +57,21 @@
                     answer_div.addClass('wrong');
                     $('#question-result').html(answer_data.player + ' ОБЪРКА!!!');
                 }
+
+                var leaderboard_html = "";
+
+                if( answer_data.players ){
+                    console.log(answer_data.players);
+                    for( var i=0; i < answer_data.players.length; i++ ) {
+                        leaderboard_html += "<tr>";
+                        leaderboard_html += "<td>" + (i+1) + "</td>";
+                        leaderboard_html += "<td>" + answer_data.players.name + "</td>";
+                        leaderboard_html += "<td>" + answer_data.players.points + "</td>";
+                        leaderboard_html += "</tr>";
+                    }
+
+                    $('#leaderboard').html(leaderboard_html);
+                }
             });
 
             socket.emit('game started', true);
@@ -65,9 +81,6 @@
 
 <body>
     <div class="container-fluid">
-
-        
-
         <div class="row">
             <div class="col-md-9">
                 <div class="page-header text-center">
@@ -116,7 +129,7 @@
                             <th>Резултат</th>
                         </tr>
                     </thead>
-                    <tbody class="text-left">
+                    <tbody class="text-left" id="leaderboard">
                         <tr class="success">
                             <td>1</td>
                             <td>Иво</td>
