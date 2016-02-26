@@ -27,8 +27,14 @@
     background-color: #982649;
 }
 
-
-.correct {
+.correct,
+.correct .answers__single-answer__border {
     background-color: #4caf50;
     color: #fff;
+}
+
+.wrong,
+.wrong .answers__single-answer__border{
+    background-color: #ff5722;
+    color: #fff;   
 }

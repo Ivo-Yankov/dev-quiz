@@ -53,8 +53,9 @@ io.on('connection', function(socket){
 		var status = answer == current_question.q_correct_option
 
 		io.emit('answer', {
+			'status'	: status,
 			'player'	: player_names[socket.id] || 'undefined',
-			'status'	: status
+			'answer'	: answer
 		});
 
 		setTimeout(function(){

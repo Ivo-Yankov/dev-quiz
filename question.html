@@ -46,6 +46,15 @@
 
             socket.on('answer', function(answer_data){
                 console.log(answer_data);
+                var answer_div = $( '#answer-' + answer_data.answer ).closest('.answers__single-answer');
+                if( answer_data.status ) {
+                    answer_div.addClass('correct');
+                    $('#question-result').html(answer_data.player + ' ПОЗНА!');
+                }
+                else {
+                    answer_div.addClass('wrong');
+                    $('#question-result').html(answer_data.player + ' ОБЪРКА!!!');
+                }
             });
 
             socket.emit('game started', true);
@@ -88,6 +97,9 @@
                         <div class="answers__single-answer__border color--choice4"></div>
                     </div>
                 </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12" id="question-result"></div>
             </div>
         </div>
 
