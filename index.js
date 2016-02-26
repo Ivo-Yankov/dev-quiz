@@ -84,7 +84,15 @@ function getQuestions(){
 
 function sendQuestion(){
 	current_question = questions[ questions.length - 1 ];
-	io.emit('question', {category : category.category_name, question : current_question });
+	
+	// var question_data = {
+	// 	category : category.category_name,
+	// 	question : current_question
+	// };
+
+	var question_data = current_question;
+
+	io.emit('question', question_data);
 	console.log(current_question);
 	questions.pop();
 	if( questions.length == 0 ) {

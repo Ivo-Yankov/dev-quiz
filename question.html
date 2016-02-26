@@ -30,9 +30,10 @@
         var socket = io();
         $(function(){
             socket.on('question', function(question_data){
-                var question = question_data.question;
+                $('.correct').removeClass('correct');
+                $('.wrong').removeClass('wrong');
+                question = question_data;
                 if(question){
-                    console.log(question);
                     $('#question-text').html(question.q_text);
                     $('#answer-1').text(question.q_options_1);
                     $('#answer-2').text(question.q_options_2);
@@ -144,9 +145,9 @@
                     </tbody>
                 </table>
             </div>
-            <div class="row">
-                <div class="col-md-12" id="question-result"></div>
-            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12" id="question-result"></div>
         </div>
 
 
